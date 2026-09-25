@@ -98,7 +98,7 @@
     /* ── User count ── */
     (async function () {
       try {
-        const r = await fetch('https://task-reminder-vskc.onrender.com/users/count');
+        const r = await fetch('https://task-remainder-vskc.onrender.com/users/count');
         const d = await r.json();
         document.getElementById('user-count').textContent = d.count;
       } catch (_) {}
