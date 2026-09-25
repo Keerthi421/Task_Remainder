@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-dotenv
+apscheduler
+email-validator
+pytz
+passlib==1.7.4
+bcrypt==4.0.1
+python-jose[cryptography]
+requests
+python-multipart
+anthropic
