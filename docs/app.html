@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Task Reminder</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
@@ -192,7 +192,7 @@
     </div>
   </div>
 
-  <script src="/static/script.js"></script>
+  <script src="./script.js"></script>
 
   <!-- Particle canvas + PWA registration -->
   <script>
@@ -203,7 +203,7 @@
       function dr(){ctx.clearRect(0,0,c.width,c.height);s.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(245,245,245,${p.a})`;ctx.fill();p.y+=p.v;if(p.y>c.height){p.y=0;p.x=Math.random()*c.width;}});requestAnimationFrame(dr);}
       r();mk(180);dr();window.addEventListener('resize',()=>{r();mk(180);});
     })();
-    if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
     document.querySelectorAll('.reminder-chip').forEach(chip=>{
       chip.addEventListener('click',()=>{
         const inp=chip.querySelector('input');
