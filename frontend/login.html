@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Task Reminder</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Nav -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="/">TR</a>
+    <ul class="navbar-links">
+      <li><a href="/">Home</a></li>
+    </ul>
+  </nav>
+
+  <!-- Auth card -->
+  <div class="auth-page">
+    <div class="auth-card">
+      <h1 class="auth-title">Welcome<br><span style="color:var(--text-dim)">Back.</span></h1>
+      <p class="auth-sub">Sign in to manage your reminders, or create an account below.</p>
+
+      <div class="auth-tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn"        onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- Login -->
+      <form id="login-form" class="auth-form active">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Sign In</button>
+        <p id="login-error" class="msg-error"></p>
+      </form>
+
+      <!-- Register -->
+      <form id="register-form" class="auth-form">
+        <div class="form-group">
+          <label for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password <span style="font-size:10px;color:var(--text-dim);">(min 6 chars)</span></label>
+          <input type="password" id="reg-password" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Create Account</button>
+        <p id="reg-error" class="msg-error"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /* ── Particle canvas ── */
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+      function createStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++)
+          stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.1+0.2, alpha: Math.random()*0.5+0.1, speed: Math.random()*0.25+0.05 });
+      }
+      function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        stars.forEach(s => {
+          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle=`rgba(245,245,245,${s.alpha})`; ctx.fill();
+          s.y+=s.speed; if(s.y>canvas.height){s.y=0;s.x=Math.random()*canvas.width;}
+        });
+        requestAnimationFrame(draw);
+      }
+      resize(); createStars(200); draw();
+      window.addEventListener('resize', ()=>{ resize(); createStars(200); });
+    })();
+
+    /* ── Tab switching ── */
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===(tab==='login'?0:1)));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      document.getElementById(tab===('login')?'login-form':'register-form').classList.add('active');
+    }
+
+    /* ── Auth requests ── */
+    async function handleAuth(url, body, errEl) {
+      errEl.style.display = 'none';
+      try {
+        const isForm = url.includes('token');
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': isForm ? 'application/x-www-form-urlencoded' : 'application/json' },
+          body
+        });
+        let data;
+        try { data = await res.json(); } catch { throw new Error(`Server error (${res.status})`); }
+        if (!res.ok) throw new Error(data.detail || 'Request failed');
+        if (data.access_token) { localStorage.setItem('token', data.access_token); window.location.href = '/app'; }
+        else { alert('Account created! Please sign in.'); switchTab('login'); document.getElementById('login-email').value = document.getElementById('reg-email').value; }
+      } catch (e) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const b = new URLSearchParams();
+      b.append('username', document.getElementById('login-email').value);
+      b.append('password', document.getElementById('login-password').value);
+      handleAuth('/token', b, document.getElementById('login-error'));
+    });
+
+    document.getElementById('register-form').addEventListener('submit', e => {
+      e.preventDefault();
+      handleAuth('/register', JSON.stringify({ email: document.getElementById('reg-email').value, password: document.getElementById('reg-password').value }), document.getElementById('reg-error'));
+    });
+  </script>
+</body>
+</html>
