@@ -6,7 +6,7 @@ from typing import Annotated
 from fastapi import (FastAPI, Depends, HTTPException, status,
                      UploadFile, File, Request)
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -32,6 +32,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+# Explicitly handle browser CORS preflight requests.
+# This is needed because the GitHub Pages frontend is hosted on a
+# different origin from the Render API.
+@app.options("/{path:path}")
+async def cors_preflight(path: str, request: Request):
+    requested_headers = request.headers.get("access-control-request-headers", "")
+    headers = {
+        "Access-Control-Allow-Origin": "https://keerthi421.github.io",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": requested_headers or "Content-Type, Authorization",
+        "Access-Control-Max-Age": "600",
+    }
+    return Response(status_code=204, headers=headers)
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
