@@ -1,9 +1,9 @@
 const CACHE = 'task-reminder-v2';
 const STATIC_ASSETS = [
-  '/static/style.css',
-  '/static/script.js',
-  '/login',
-  '/',
+  './style.css',
+  './script.js',
+  './login.html',
+  './',
 ];
 
 self.addEventListener('install', e => {
