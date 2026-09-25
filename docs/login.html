@@ -116,12 +116,12 @@
       const b = new URLSearchParams();
       b.append('username', document.getElementById('login-email').value);
       b.append('password', document.getElementById('login-password').value);
-      handleAuth('https://task-reminder-vskc.onrender.com/token', b, document.getElementById('login-error'));
+      handleAuth('https://task-remainder-vskc.onrender.com/token', b, document.getElementById('login-error'));
     });
 
     document.getElementById('register-form').addEventListener('submit', e => {
       e.preventDefault();
-      handleAuth('https://task-reminder-vskc.onrender.com/register', JSON.stringify({ email: document.getElementById('reg-email').value, password: document.getElementById('reg-password').value }), document.getElementById('reg-error'));
+      handleAuth('https://task-remainder-vskc.onrender.com/register', JSON.stringify({ email: document.getElementById('reg-email').value, password: document.getElementById('reg-password').value }), document.getElementById('reg-error'));
     });
   </script>
 </body>
