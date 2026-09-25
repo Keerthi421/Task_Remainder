@@ -1,5 +1,5 @@
 /* ── Config & state ─────────────────────────────────────────── */
-const API = "https://task-reminder-vskc.onrender.com";
+const API = "https://task-remainder-vskc.onrender.com";
 const token = localStorage.getItem('token');
 if (!token) window.location.href = './login.html';
 
