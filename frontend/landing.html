@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Reminder — Intelligent Scheduling</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Nav -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="/">TR</a>
+    <ul class="navbar-links">
+      <li><a href="/login">Login</a></li>
+      <li><a href="/login" class="btn btn-outline btn-sm" style="border-radius:9999px;">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-badge"><span class="dot"></span>Reminders, On Time</p>
+
+    <h1 class="hero-title">
+      Never Miss<br>
+      <span class="dim">A Deadline.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Intelligent deadline reminders that adapt to your schedule and priority level. Set it once — we handle the rest.
+    </p>
+
+    <div class="hero-tags">
+      <span>Email Notifications</span>
+      <span>Priority Scheduling</span>
+      <span>Real-Time Status</span>
+    </div>
+
+    <div class="hero-actions">
+      <a href="/login" class="btn btn-primary">Start Scheduling</a>
+      <a href="/login" class="btn btn-outline">Sign In</a>
+    </div>
+
+    <div class="user-counter">
+      <strong id="user-count">—</strong>
+      <span>users already on board</span>
+    </div>
+  </section>
+
+  <script>
+    /* ── Particle canvas (matching the portfolio's starfield) ── */
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function createStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++) {
+          stars.push({
+            x:     Math.random() * canvas.width,
+            y:     Math.random() * canvas.height,
+            r:     Math.random() * 1.2 + 0.2,
+            alpha: Math.random() * 0.6 + 0.1,
+            speed: Math.random() * 0.3 + 0.05
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(s => {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(245,245,245,${s.alpha})`;
+          ctx.fill();
+          s.y += s.speed;
+          if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+        });
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      createStars(240);
+      draw();
+      window.addEventListener('resize', () => { resize(); createStars(240); });
+    })();
+
+    /* ── User count ── */
+    (async function () {
+      try {
+        const r = await fetch('/users/count');
+        const d = await r.json();
+        document.getElementById('user-count').textContent = d.count;
+      } catch (_) {}
+    })();
+  </script>
+</body>
+</html>
