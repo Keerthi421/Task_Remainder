@@ -26,8 +26,11 @@ run_migrations(engine)          # add new columns to existing DB without data lo
 app = FastAPI(title="Deadline Reminder Engine")
 
 app.add_middleware(
-    CORSMiddleware, allow_origins=["*"],
-    allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
+    CORSMiddleware,
+    allow_origins=["https://keerthi421.github.io"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
