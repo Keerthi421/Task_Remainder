@@ -12,3 +12,5 @@ python-jose[cryptography]
 requests
 python-multipart
 anthropic
+
+psycopg2-binary
