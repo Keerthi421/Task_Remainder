@@ -1,5 +1,5 @@
 /* ── Config & state ─────────────────────────────────────────── */
-const API = "";
+const API = "https://task-reminder-vskc.onrender.com";
 const token = localStorage.getItem('token');
 if (!token) window.location.href = './login.html';
 
@@ -441,7 +441,7 @@ async function shareTask(id) {
     const r = await fetch(`${API}/tasks/${id}/share`, { method:'POST', headers: hdr() });
     if (!r.ok) { notify('Could not generate link.'); return; }
     const d = await r.json();
-    const url = `${location.origin}${d.public_url}`;
+    const url = `${API}${d.public_url}`;
     $('share-url').value = url;
     $('share-modal').style.display = 'flex';
   } catch(_) { notify('Error.'); }
